@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Price Guessing Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-container">
+        <h1>Image Price Guessing Game</h1>
+        <div id="start-container">
+            <input type="text" id="player-name" placeholder="Enter your name" >
+            <button id="start-game">Start Game</button>
+        </div>
+        <div id="game-section" style="display: none;">
+            <div id="image-container">
+                <img id="item-image" src="https://picsum.photos/seed/tfltu-jtn0cjp5WHnIQo3/512" alt="Item Image">
+            </div>
+            <div id="guess-container">
+                <input type="number" id="price-guess" placeholder="Enter your guess">
+                <button id="submit-guess">Submit Guess</button>
+            </div>
+            <div id="score-container">
+                <h2>Score: <span id="current-score">0</span></h2>
+            </div>
+            <div id="feedback-container"></div>
+        </div>
+        <div id="leaderboard-container">
+            <h2>Leaderboard</h2>
+            <ul id="leaderboard"></ul>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>

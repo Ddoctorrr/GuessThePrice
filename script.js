@@ -1,20 +1,21 @@
 const items = [
-    { image: 'image1.jpg', price: 27600000 },
-    { image: 'image2.jpg', price: 30900000 },
-    { image: 'image3.jpg', price: 30900000 },
-    { image: 'image4.jpg', price: 78400000 },
-    { image: 'image5.jpg', price: 1920000 },
-    { image: 'image6.jpg', price: 400000000 },
-    { image: 'image7.jpg', price: 200000000 },
-    { image: 'image8.jpg', price: 88605000 },
-    { image: 'image9.jpg', price: 90312500 },
-    { image: 'image10.jpg', price: 110487500 },
-    { image: 'image11.jpg', price: 1500000 },
-    { image: 'image12.jpg', price: 135000000 },
-    { image: 'image13.jpg', price: 259000000 },
-    { image: 'image14.jpg', price: 148600000 },
-    { image: 'image15.jpg', price: 128200000 },
+    { title: 'Image 1', price: 27600000 },
+    { title: 'Image 2', price: 30900000 },
+    { title: 'Image 3', price: 30900000 },
+    { title: 'Image 4', price: 78400000 },
+    { title: 'Image 5', price: 1920000 },
+    { title: 'Image 6', price: 400000000 },
+    { title: 'Image 7', price: 200000000 },
+    { title: 'Image 8', price: 88605000 },
+    { title: 'Image 9', price: 90312500 },
+    { title: 'Image 10', price: 110487500 },
+    { title: 'Image 11', price: 1500000 },
+    { title: 'Image 12', price: 135000000 },
+    { title: 'Image 13', price: 259000000 },
+    { title: 'Image 14', price: 148600000 },
+    { title: 'Image 15', price: 128200000 },
 ];
+
 
 let currentIndex = 0;
 let totalScore = 0;
@@ -25,10 +26,7 @@ const feedbackContainer = document.getElementById('feedback-container');
 const leaderboardElement = document.getElementById('leaderboard');
 
 
-function resetLeaderboard() {
-    localStorage.removeItem('scores'); // Clear stored scores
-    leaderboardElement.innerHTML = ''; // Clear leaderboard display
-}
+
 
 document.getElementById('start-game').addEventListener('click', () => {
     playerName = document.getElementById('player-name').value.trim();
@@ -46,8 +44,9 @@ function startGame() {
 }
 
 function loadImage() {
-    itemImageElement.src = items[currentIndex].image;
+    itemImageElement.textContent = items[currentIndex].title;
 }
+
 
 document.getElementById('submit-guess').addEventListener('click', () => {
     const guess = parseInt(document.getElementById('price-guess').value, 10);
@@ -59,7 +58,7 @@ document.getElementById('submit-guess').addEventListener('click', () => {
     totalScore += score;
     currentScoreElement.textContent = totalScore;
 
-    feedbackContainer.textContent = `Your guess: ${guess}, Actual price: ${actualPrice}, Score: ${score}`;
+    feedbackContainer.textContent = `Your guess: ${guess}, Score: ${score}`;
 
     currentIndex++;
     if (currentIndex < items.length) {

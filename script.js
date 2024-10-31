@@ -43,11 +43,6 @@ function startGame() {
     loadImage();
 }
 
-function loadImage() {
-    itemImageElement.textContent = items[currentIndex].title;
-}
-
-
 document.getElementById('submit-guess').addEventListener('click', () => {
     const guess = parseInt(document.getElementById('price-guess').value, 10);
     if (isNaN(guess)) {

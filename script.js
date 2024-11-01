@@ -1,3 +1,24 @@
+// Import necessary Firebase modules
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics.js";
+import { getDatabase, ref, set, push, onValue } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+
+// Your Firebase configuration
+const firebaseConfig = {
+    apiKey: "AIzaSyAuUNRLpUsvhfUhS9exTA57Y1OzRhsAyi0",
+    authDomain: "guess-the-price-f7917.firebaseapp.com",
+    projectId: "guess-the-price-f7917",
+    storageBucket: "guess-the-price-f7917.appspot.com",
+    messagingSenderId: "781413779949",
+    appId: "1:781413779949:web:13d07d57e7e009aad5ffe4",
+    measurementId: "G-7RVNRMFP6B"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+const database = getDatabase(app);
+
 const items = [
     { title: 'Image 1', price: 27600000 },
     { title: 'Image 2', price: 30900000 },
@@ -16,17 +37,13 @@ const items = [
     { title: 'Image 15', price: 128200000 },
 ];
 
-
 let currentIndex = 0;
 let totalScore = 0;
 let playerName = '';
 const currentScoreElement = document.getElementById('current-score');
-const itemImageElement = document.getElementById('item-image');
+const itemTitleElement = document.getElementById('item-title'); 
 const feedbackContainer = document.getElementById('feedback-container');
 const leaderboardElement = document.getElementById('leaderboard');
-
-
-
 
 document.getElementById('start-game').addEventListener('click', () => {
     playerName = document.getElementById('player-name').value.trim();
@@ -40,13 +57,18 @@ document.getElementById('start-game').addEventListener('click', () => {
 function startGame() {
     document.getElementById('start-container').style.display = 'none';
     document.getElementById('game-section').style.display = 'block';
-    loadImage();
+    loadTitle();
+}
+
+function loadTitle() {
+    itemTitleElement.textContent = items[currentIndex].title; 
 }
 
 document.getElementById('submit-guess').addEventListener('click', () => {
     const guess = parseInt(document.getElementById('price-guess').value, 10);
     if (isNaN(guess)) {
-        guess = 0;
+        alert("Please enter a valid number for your guess!");
+        return;
     }
     const actualPrice = items[currentIndex].price;
     const score = Math.abs(guess - actualPrice);
@@ -57,7 +79,7 @@ document.getElementById('submit-guess').addEventListener('click', () => {
 
     currentIndex++;
     if (currentIndex < items.length) {
-        loadImage();
+        loadTitle();
         document.getElementById('price-guess').value = '';
     } else {
         storeScore(totalScore);
@@ -66,119 +88,31 @@ document.getElementById('submit-guess').addEventListener('click', () => {
     }
 });
 
-// Store the player's score in localStorage
+// Store the player's score in Firebase
 function storeScore(points) {
-    const scores = JSON.parse(localStorage.getItem('scores')) || [];
-    scores.push({ name: playerName, points });
-    localStorage.setItem('scores', JSON.stringify(scores));
+    const scoresRef = ref(database, 'scores/');
+    const newScoreRef = push(scoresRef);
+    set(newScoreRef, {
+        name: playerName,
+        points: points
+    });
 }
 
-// Display the leaderboard from localStorage
+// Display the leaderboard from Firebase
 function displayLeaderboard() {
-    const scores = JSON.parse(localStorage.getItem('scores')) || [];
-    scores.sort((a, b) => a.points - b.points);
-    leaderboardElement.innerHTML = scores
-        .map(score => `<li>${score.name}: ${score.points}</li>`)
-        .join('');
+    const scoresRef = ref(database, 'scores/');
+    onValue(scoresRef, (snapshot) => {
+        const scores = [];
+        snapshot.forEach((childSnapshot) => {
+            const score = childSnapshot.val();
+            scores.push(score);
+        });
+        scores.sort((a, b) => a.points - b.points);
+        leaderboardElement.innerHTML = scores
+            .map(score => `<li>${score.name}: ${score.points}</li>`)
+            .join('');
+    });
 }
 
 // Load the leaderboard on page load
 window.addEventListener('load', displayLeaderboard);
-
-loadImage();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// const items = [
-//     { image: 'image1.jpg', price: 27600000 },
-//     { image: 'image2.jpg', price: 30900000 },
-//     { image: 'image3.jpg', price: 30900000 },
-//     { image: 'image4.jpg', price: 78400000 },
-//     { image: 'image5.jpg', price: 1920000 },
-//     { image: 'image6.jpg', price: 400000000 },
-//     { image: 'image7.jpg', price: 200000000 },
-//     { image: 'image8.jpg', price: 88605000 },
-//     { image: 'image9.jpg', price: 90312500 },
-//     { image: 'image10.jpg', price: 110487500 },
-//     { image: 'image11.jpg', price: 1500000 },
-//     { image: 'image12.jpg', price: 135000000 },
-//     { image: 'image13.jpg', price: 259000000 },
-//     { image: 'image14.jpg', price: 148600000 },
-//     { image: 'image15.jpg', price: 128200000 },
-// ];
-
-// let currentIndex = 0;
-// let totalScore = 0;
-// let playerName = '';
-// const currentScoreElement = document.getElementById('current-score');
-// const itemImageElement = document.getElementById('item-image');
-// const feedbackContainer = document.getElementById('feedback-container');
-// const leaderboardElement = document.getElementById('leaderboard');
-
-// document.getElementById('start-game').addEventListener('click', () => {
-//     playerName = document.getElementById('player-name').value.trim();
-//     if (playerName) {
-//         startGame();
-//     } else {
-//         alert("Please enter your name!");
-//     }
-// });
-
-// function startGame() {
-//     document.getElementById('start-container').style.display = 'none';
-//     document.getElementById('game-section').style.display = 'block';
-//     loadImage();
-// }
-
-// function loadImage() {
-//     itemImageElement.src = items[currentIndex].image;
-// }
-
-// document.getElementById('submit-guess').addEventListener('click', () => {
-//     const guess = parseInt(document.getElementById('price-guess').value, 10);
-//     const actualPrice = items[currentIndex].price;
-//     const score = Math.abs(guess - actualPrice);
-//     totalScore += score;
-//     currentScoreElement.textContent = totalScore;
-
-//     feedbackContainer.textContent = `Your guess: ${guess}, Actual price: ${actualPrice}, Score: ${score}`;
-
-//     currentIndex++;
-//     if (currentIndex < items.length) {
-//         loadImage();
-//         document.getElementById('price-guess').value = '';
-//     } else {
-//         displayLeaderboard();
-//     }
-// });
-
-// function displayLeaderboard() {
-//     const newEntry = document.createElement('li');
-//     newEntry.textContent = `Player: ${playerName}, Total Score: ${totalScore}`;
-//     leaderboardElement.appendChild(newEntry);
-//     feedbackContainer.textContent += ' Game Over! Check the leaderboard for results.';
-// }
-
-// loadImage();

@@ -5,16 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Title Price Guessing Game</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js"></script> <!-- Add this line for Realtime Database -->
-
+    <script type="module" src="script.js" defer></script>
 </head>
 <body>
     <div id="game-container">
         <h1>Title Price Guessing Game</h1>
         <div id="start-container">
-            <input type="text" id="player-name" placeholder="Enter your name" >
+            <input type="text" id="player-name" placeholder="Enter your name">
             <button id="start-game">Start Game</button>
         </div>
         <div id="game-section" style="display: none;">
@@ -35,7 +32,5 @@
             <ul id="leaderboard"></ul>
         </div>
     </div>
-    
-    <script src="script.js"></script>
 </body>
 </html>

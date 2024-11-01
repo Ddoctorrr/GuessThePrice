@@ -1,4 +1,3 @@
-// Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
@@ -116,6 +115,3 @@ async function displayLeaderboard() {
 
 // Load the leaderboard on page load
 window.addEventListener('load', displayLeaderboard);
-
-
-

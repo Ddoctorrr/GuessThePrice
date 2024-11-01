@@ -3,19 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Price Guessing Game</title>
+    <title>Title Price Guessing Game</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js"></script> <!-- Add this line for Realtime Database -->
+
 </head>
 <body>
     <div id="game-container">
-        <h1>Image Price Guessing Game</h1>
+        <h1>Title Price Guessing Game</h1>
         <div id="start-container">
             <input type="text" id="player-name" placeholder="Enter your name" >
             <button id="start-game">Start Game</button>
         </div>
         <div id="game-section" style="display: none;">
-            <div id="image-container">
-         </div>
+            <div id="title-container">
+                <h2 id="item-title">Title 1</h2>
+            </div>
             <div id="guess-container">
                 <input type="number" id="price-guess" placeholder="Enter your guess">
                 <button id="submit-guess">Submit Guess</button>

@@ -1,14 +1,13 @@
-// Import necessary Firebase modules
+// Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics.js";
-import { getDatabase, ref, set, push, onValue } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-// Your Firebase configuration
+// Your web app's Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyAuUNRLpUsvhfUhS9exTA57Y1OzRhsAyi0",
     authDomain: "guess-the-price-f7917.firebaseapp.com",
     projectId: "guess-the-price-f7917",
-    storageBucket: "guess-the-price-f7917.appspot.com",
+    storageBucket: "guess-the-price-f7917.firebasestorage.app",
     messagingSenderId: "781413779949",
     appId: "1:781413779949:web:13d07d57e7e009aad5ffe4",
     measurementId: "G-7RVNRMFP6B"
@@ -16,9 +15,9 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-const database = getDatabase(app);
+const db = getFirestore(app);
 
+// Game variables
 const items = [
     { title: 'Image 1', price: 27600000 },
     { title: 'Image 2', price: 30900000 },
@@ -41,7 +40,7 @@ let currentIndex = 0;
 let totalScore = 0;
 let playerName = '';
 const currentScoreElement = document.getElementById('current-score');
-const itemTitleElement = document.getElementById('item-title'); 
+const itemTitleElement = document.getElementById('item-title');
 const feedbackContainer = document.getElementById('feedback-container');
 const leaderboardElement = document.getElementById('leaderboard');
 
@@ -61,7 +60,7 @@ function startGame() {
 }
 
 function loadTitle() {
-    itemTitleElement.textContent = items[currentIndex].title; 
+    itemTitleElement.textContent = items[currentIndex].title;
 }
 
 document.getElementById('submit-guess').addEventListener('click', () => {
@@ -88,31 +87,35 @@ document.getElementById('submit-guess').addEventListener('click', () => {
     }
 });
 
-// Store the player's score in Firebase
-function storeScore(points) {
-    const scoresRef = ref(database, 'scores/');
-    const newScoreRef = push(scoresRef);
-    set(newScoreRef, {
-        name: playerName,
-        points: points
-    });
+// Store the player's score in Firestore
+async function storeScore(points) {
+    try {
+        await addDoc(collection(db, "scores"), {
+            name: playerName,
+            points: points
+        });
+    } catch (e) {
+        console.error("Error adding document: ", e);
+    }
 }
 
-// Display the leaderboard from Firebase
-function displayLeaderboard() {
-    const scoresRef = ref(database, 'scores/');
-    onValue(scoresRef, (snapshot) => {
-        const scores = [];
-        snapshot.forEach((childSnapshot) => {
-            const score = childSnapshot.val();
-            scores.push(score);
-        });
-        scores.sort((a, b) => a.points - b.points);
-        leaderboardElement.innerHTML = scores
-            .map(score => `<li>${score.name}: ${score.points}</li>`)
-            .join('');
-    });
+// Display the leaderboard from Firestore
+async function displayLeaderboard() {
+    const scoresCol = collection(db, 'scores');
+    const scoreSnapshot = await getDocs(scoresCol);
+    const scores = scoreSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    
+    // Sort scores in ascending order
+    scores.sort((a, b) => a.points - b.points);
+    
+    // Update the leaderboard element
+    leaderboardElement.innerHTML = scores
+        .map(score => `<li>${score.name}: ${score.points}</li>`)
+        .join('');
 }
 
 // Load the leaderboard on page load
 window.addEventListener('load', displayLeaderboard);
+
+
+
